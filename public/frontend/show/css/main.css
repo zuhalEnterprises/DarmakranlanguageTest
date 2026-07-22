@@ -1,0 +1,363 @@
+.gm-err-container {
+    height: 100%;
+    width: 100%;
+    display: table;
+    background-color: #e0e0e0;
+    position: relative;
+    left: 0;
+    top: 0
+}
+
+.gm-err-content {
+    border-radius: 1px;
+    padding-top: 0;
+    padding-left: 10%;
+    padding-right: 10%;
+    position: static;
+    vertical-align: middle;
+    display: table-cell
+}
+
+    .gm-err-content a {
+        color: #4285f4
+    }
+
+.gm-err-icon {
+    text-align: center
+}
+
+.gm-err-title {
+    margin: 5px;
+    margin-bottom: 20px;
+    color: #616161;
+    font-family: Roboto,Arial,sans-serif;
+    text-align: center;
+    font-size: 24px
+}
+
+.gm-err-message {
+    margin: 5px;
+    color: #757575;
+    font-family: Roboto,Arial,sans-serif;
+    text-align: center;
+    font-size: 12px
+}
+
+.gm-err-autocomplete {
+    padding-left: 20px;
+    background-repeat: no-repeat;
+    background-size: 15px 15px
+}
+
+.gm-style .gm-style-cc a, .gm-style .gm-style-cc button, .gm-style .gm-style-cc span, .gm-style .gm-style-mtc div {
+    font-size: 10px;
+    box-sizing: border-box
+}
+.gm-style-pbc {
+    transition: opacity ease-in-out;
+    background-color: rgba(0,0,0,0.45);
+    text-align: center
+}
+
+.gm-style-pbt {
+    font-size: 22px;
+    color: white;
+    font-family: Roboto,Arial,sans-serif;
+    position: relative;
+    margin: 0;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%)
+}
+.gm-style img {
+    max-width: none;
+}
+
+.gm-style {
+    font: 400 11px Roboto, Arial, sans-serif;
+    text-decoration: none;
+}
+.gm-control-active > img {
+    box-sizing: content-box;
+    display: none;
+    left: 50%;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%)
+}
+
+    .gm-control-active > img:nth-child(1) {
+        display: block
+    }
+
+.gm-control-active:hover > img:nth-child(1), .gm-control-active:active > img:nth-child(1) {
+    display: none
+}
+
+.gm-control-active:hover > img:nth-child(2), .gm-control-active:active > img:nth-child(3) {
+    display: block
+}
+.gm-ui-hover-effect {
+    opacity: .6
+}
+
+    .gm-ui-hover-effect:hover {
+        opacity: 1
+    }
+@media print {
+    .gm-style .gmnoprint, .gmnoprint {
+        display: none
+    }
+}
+
+@media screen {
+    .gm-style .gmnoscreen, .gmnoscreen {
+        display: none
+    }
+}
+
+.gm-style .gm-style-cc a, .gm-style .gm-style-cc button, .gm-style .gm-style-cc span, .gm-style .gm-style-mtc div {
+    font-size: 10px;
+    box-sizing: border-box
+}
+
+.gm-style-pbc {
+    transition: opacity ease-in-out;
+    background-color: rgba(0,0,0,0.45);
+    text-align: center
+}
+
+.gm-style-pbt {
+    font-size: 22px;
+    color: white;
+    font-family: Roboto,Arial,sans-serif;
+    position: relative;
+    margin: 0;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%)
+}
+
+.gm-style img {
+    max-width: none;
+}
+
+.gm-style {
+    font: 400 11px Roboto, Arial, sans-serif;
+    text-decoration: none;
+}
+img.wp-smiley, img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 .07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important
+}
+
+.pagination > li > a, .pagination > li > span, .single-content p a, .featured_article:hover h2 a, .user_dashboard_listed a, .blog_unit_meta .read_more, .slider-content .read_more, .blog2v .read_more, .breadcrumb .active, .unit_more_x a, .unit_more_x, #login_trigger_modal {
+    color: #222
+}
+
+.single-content p a, .contact-wrapper p a {
+    color: #222222 !important
+}
+
+#colophon .widget-title-footer {
+    color: #999
+}
+
+.sub_footer {
+    background-color: #1f1f1f
+}
+
+.top_bar_wrapper {
+    background-color: #111
+}
+
+.top_bar, .top_bar a {
+    color: #fff
+}
+
+@media only screen and (min-width:1024px) {
+    .sub-menu .menu-item-has-children > a:after {
+        top: 50%;
+        transform: translateY(-50%);
+        line-height: 1.4em;
+        position: absolute;
+        right: 0
+    }
+}
+
+.mobilex-menu .sub-menu a {
+    padding-left: 40px
+}
+
+.theme_slider_3_carousel-indicators {
+    bottom: 50px
+}
+
+.page-id-20330 .slick-track {
+    padding-top: 0
+}
+
+.wpes.page-id-623 .submit_actiontate_marker:before {
+    bottom: -5px
+}
+
+.page-id-20424 .listing_filter_select .caret_filter, .page-id-22978 .listing_filter_select .caret_filter {
+    top: 19px
+}
+
+.page-id-31885 .gpr_wrapper label {
+    width: auto
+}
+
+.postid-31746 .elementor-widget-container .single-overview-section {
+    width: auto
+}
+
+.postid-31744 .breadcrumb_container, .postid-31746 .breadcrumb_container, .postid-31747 .breadcrumb_container, .page-id-22238 .search_wr_5 h3 {
+    display: none
+}
+
+.page-id-22232 #search_wrapper.search_wr_2.with_search_form_float {
+    padding: 15px 7px 0 7px
+}
+
+.page-id-22234 #search_wrapper.with_search_form_float {
+    box-shadow: none
+}
+
+.header5_user_wrap .header_phone svg, .header5_user_wrap .header_phone a, .header_transparent .header_phone a {
+    color: #fff
+}
+
+.header5_user_wrap .header_phone svg, .header5_user_wrap .header_phone a, .header_transparent .header_phone a, .header_transparent .header_phone svg, .header_transparent .submit_action svg {
+    fill: #fff
+}
+
+.customnav .header5_user_wrap .header_phone svg, .customnav .header5_user_wrap .header_phone a, .header_transparent .customnav .header_phone a {
+    color: #222 !important;
+    fill: #222 !important
+}
+
+.header5_user_wrap .header_phone {
+    display: none
+}
+
+.header_5_widget_icon {
+    color: #0f73e1
+}
+
+#search_wrapper.with_search_form_float #advanced_submit_4:hover {
+    background-color: #0857a2 !important;
+    border-color: #0857a2 !important;
+    color: #fff
+}
+
+.heading_over_video_wrapper {
+    top: 45%
+}
+
+.home .heading_over_image_wrapper {
+    top: 45%
+}
+
+.page-id-22234 .adv_extended_options_text, .home .search_wr_6 .adv_extended_options_text {
+    display: none
+}
+
+.page-id-22454 #search_wrapper_color, .page-id-20306 #search_wrapper_color {
+    background-color: #063261
+}
+
+.page-id-623 .customnav.header_type5 #access .menu li:hover > a {
+    color: #fff !important
+}
+
+#change_pass {
+    display: none
+}
+
+.single-post #search_wrapper, .single-post #adv-search-header-mobile {
+    display: none !important
+}
+
+.page-template-default .breadcrumb_container {
+    display: none !important
+}
+
+.page-id-352 .breadcrumb_container, .page-id-22551 .breadcrumb_container, .page-id-623.breadcrumb_container, .page-id-22548 .breadcrumb_container {
+    display: none
+}
+
+.page-template-default .entry-title {
+    margin-top: 40px
+}
+
+.page-id-1599 .widget-area-sidebar {
+    margin-top: 45px
+}
+
+.archive.category #gmap_wrapper {
+    display: none
+}
+
+.archive.category #search_wrapper {
+    display: none
+}
+
+.page-id-20306 #adv-search-mobile .adv_search_slider, .page-id-20306 .col-md-3.property_status, .page-id-20306 .col-md-6.property_price, .page-id-20306 .col-md-3.property_bedrooms, .page-id-22242 #adv-search-mobile .adv_search_slider, .page-id-22242 .col-md-3.property_status, .page-id-22242 .col-md-6.property_price, .page-id-22242 .col-md-3.property_bedrooms, .page-id-22246 #adv-search-mobile .adv_search_slider, .page-id-22246 .col-md-3.property_status, .page-id-22246 .col-md-6.property_price, .page-id-22246 .col-md-3.property_bedrooms, .page-id-22238 #adv-search-mobile .adv_search_slider, .page-id-22238 .col-md-3.property_status, .page-id-22238 .col-md-6.property_price, .page-id-22238 .col-md-3.property_bedrooms, .page-id-22236 #adv-search-mobile .adv_search_slider, .page-id-22236 .col-md-3.property_status, .page-id-22236 .col-md-6.property_price, .page-id-22236 .col-md-3.property_bedrooms, .page-id-22234 #adv-search-mobile .adv_search_slider, .page-id-22234 .col-md-12.property_price, .page-id-22234 .col-md-6.property_size, .page-id-22230 .col-md-6.property_price, .page-id-22230 .col-md-3.property_bedrooms, .page-id-22439 .col-md-6.property_price, .page-id-22439 .col-md-3.property_bedrooms, .page-id-22444 .col-md-6.property_price, .page-id-22444 .col-md-3.property_bedrooms, .page-id-22446 .col-md-6.property_price, .page-id-22446 .col-md-3.property_bedrooms {
+    display: none
+}
+
+.adv3-holder {
+    background-color: #062750a8
+}
+
+#search_wrapper.with_search_form_float #search_wrapper_color {
+    background-color: #062750
+}
+
+#search_wrapper {
+    background: transparent
+}
+
+    .search_wr_5 h3, #search_wrapper.with_search_form_float, #search_wrapper.with_search_form_float #amount, #search_wrapper.with_search_form_float .adv_extended_options_text i, #search_wrapper.with_search_form_float .adv_extended_options_text, #search_wrapper.with_search_form_float .extended_search_checker label, #search_wrapper.with_search_form_float .adv_search_slider label, #search_wrapper.with_search_form_float .adv_extended_options_text {
+        color: #fff
+    }
+
+        #search_wrapper.with_search_form_float #search_wrapper #amount, #search_wrapper.with_search_form_float .adv_search_slider #amount, #search_wrapper.with_search_form_float .adv6-holder .adv_search_slider p label, #search_wrapper.with_search_form_float .adv6-holder .adv_search_slider p span, #search_wrapper.with_search_form_float #amount_wd {
+            color: #ffffff !important
+        }
+
+        #search_wrapper.with_search_form_float #search_wrapper_color {
+            opacity: .35
+        }
+
+#primary .widget-container.featured_sidebar {
+    padding: 0
+}
+.main_header {
+padding: 0px!important;
+background-color: #fff;
+box-shadow: 0 4px 20px 0 rgb(167 172 183 / 30%);
+}
+.logo_image img{position:relative;bottom:15px}
+.main_header{direction:rtl}
+.fancybox-margin {
+    margin-right: 0px;
+}
+   
+.with_search_form_float .wpresidence_button.advanced_submit_4:hover {
+    background-color: #0857a2 !important;
+    border-color: #0857a2 !important;
+    color: #fff
+}

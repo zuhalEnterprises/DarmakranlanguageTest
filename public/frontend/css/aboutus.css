@@ -1,0 +1,112 @@
+
+.about {
+    /*! padding : 60px 0; */
+    
+	margin-top:100px
+}
+
+.about .about_us:before {
+    /*! background-color: #294B7E; */
+    content         : "";
+    position        : absolute;
+    top             : 0;
+    width           : 100%;
+    height          : 40%;
+    z-index         : -1;
+}
+
+.about .about_title {
+    /*color         : #0b3279;*/
+    line-height   : 40px;
+    letter-spacing: 0.88px;
+	text-align: center;
+}
+
+.about_img img {
+    width        : 100%;
+    height       : 100%;
+    
+}
+
+.about_box {
+    padding: 10px 0;
+}
+
+.about_box .about-texts {
+    padding: 20px 0;
+}
+
+.about_box .about-texts h5 {
+    color         : #0b3279;
+    font-weight   : bold;
+    letter-spacing: 0.64px;
+}
+
+.about_box .about-texts .about-description {
+    min-height: 140px;
+}
+
+.about_box .about-texts .about_btn {
+    text-transform  : uppercase;
+    letter-spacing  : 0.44px;
+    background-color: #007bc7;
+    border-radius   : 30px 30px 30px 30px;
+    padding         : 15px 80px 15px 80px;
+    fill            : #FFFFFF;
+    color           : #FFFFFF
+}
+
+.about_box .about-texts .about_btn:hover {
+    color: #007bc7;
+}
+
+@media (max-width: 760px) {
+    .about_box {
+        padding: 0px 20px;
+    }
+
+    .about .about_us:before {
+        height: 14%;
+    }
+
+    .about_box:first-child {
+        padding-top: 60px;
+    }
+
+    .about_box .about-texts .about-description {
+        min-height : 130px;
+        padding-top: 20px;
+    }
+}
+.about .text {
+    font-weight: 500;
+    
+    margin-bottom: 0px;
+    /*text-align: justify;*/
+	font-size: 10.5pt;
+}
+.about .btn {
+   
+    padding: 7px 30px;
+   
+}
+.divbtn{padding: 10px;}
+.btnbenefit div{
+	padding: 10px;
+}
+.btnbenefit button{
+	width:100%;
+}
+.benefit .benefit_title {
+    /*color         : #0b3279;*/
+    line-height   : 40px;
+    letter-spacing: 0.88px;
+	text-align: center;
+}
+.reason_box {
+
+    min-height: unset;
+}
+.divblue{
+	font-weight: 500 !important;
+}

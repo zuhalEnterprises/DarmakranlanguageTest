@@ -1,0 +1,135 @@
+    .section-form {
+        background-color: #699ABD;
+        padding: 40px 0;
+    }
+    
+    .section-form select {
+        color: #777;
+    }
+    
+    .section-form input[type="tel"] {
+        color: #777;
+        text-align: right;
+    }
+    
+    .btn-p {
+        padding: 7px 20px;
+    }
+    
+    .button-search {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .advance-search {
+        display: none;
+    }
+    
+    .advance-search.show {
+        display: block;
+    }
+    
+    .customer-box {
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 10px 0 rgb(7 95 255 / 20%) !important;
+        border-radius: 7px;
+        padding: 20px;
+        transition: box-shadow .3s;
+    }
+    
+    .customer-box:hover {
+        box-shadow: 0 0 20px 0 rgb(7 95 255 / 30%) !important;
+        border-radius: 7px;
+        padding: 20px;
+    }
+    
+    .customer-name {
+        font-weight: 800;
+        font-size: 18px;
+    }
+    
+    .customer-hedaer-icon {
+        font-size: 22px;
+    }
+    
+    .customer-body p {
+        font-size: 14px;
+    }
+    
+    .btn-customer-footer {
+        padding: 10px;
+    }
+    
+    .btn-whats {
+        background-color: #2FB842 !important;
+    }
+    
+    .btn-customer-footer.btn-whtas {
+        background-color: #2FB842;
+        border: 1px solid #2FB842;
+    }
+    
+    .btn-customer-footer.btn-whtas:hover {
+        color: #2FB842;
+        background-color: #fff;
+        border: 1px solid #2FB842;
+    }
+    
+    .btn-trash {
+        padding: 0 !important;
+    }
+    
+    .customer-link {
+        color: #000;
+        cursor: pointer;
+    }
+    
+    .customer-link:hover {
+        color: #000;
+    }
+    
+    .customer-bookmark {
+        color: #CD7F32;
+    }
+    
+    .customer-star {
+        color: #707070;
+    }
+    /* .customer-star .show {} */
+    
+    .starshow {
+        color: #FFD700;
+    }
+    
+    .customer-trash {
+        color: #F47070;
+    }
+    
+    textarea#message-text {
+        height: 200px;
+    }
+    
+    .section-pagination {
+        display: flex;
+    }
+    
+    .color_FFD700 {
+        color: #FFD700;
+    }
+    
+    .color_A9A9A9 {
+        color: #A9A9A9;
+    }
+    
+    .color_CD7F32 {
+        color: #CD7F32;
+    }
+    
+    @media (max-width:767px) {
+        .customer-box {
+            min-height: auto;
+        }
+    }

@@ -1,0 +1,245 @@
+
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Black.eot');
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Black.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../webfonts/woff2/IRANSansWeb(FaNum)_Black.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../webfonts/woff/IRANSansWeb(FaNum)_Black.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../webfonts/ttf/IRANSansWeb(FaNum)_Black.ttf') format('truetype');
+}
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: bold;
+	font-display: swap;
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Bold.eot');
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Bold.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../webfonts/woff2/IRANSansWeb(FaNum)_Bold.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../webfonts/woff/IRANSansWeb(FaNum)_Bold.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../webfonts/ttf/IRANSansWeb(FaNum)_Bold.ttf') format('truetype');
+}
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Medium.eot');
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Medium.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../webfonts/woff2/IRANSansWeb(FaNum)_Medium.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../webfonts/woff/IRANSansWeb(FaNum)_Medium.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../webfonts/ttf/IRANSansWeb(FaNum)_Medium.ttf') format('truetype');
+}
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Light.eot');
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_Light.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../webfonts/woff2/IRANSansWeb(FaNum)_Light.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../webfonts/woff/IRANSansWeb(FaNum)_Light.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../webfonts/ttf/IRANSansWeb(FaNum)_Light.ttf') format('truetype');
+}
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: 200;
+	font-display: swap;
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_UltraLight.eot');
+	src: url('../webfonts/eot/IRANSansWeb(FaNum)_UltraLight.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../webfonts/woff2/IRANSansWeb(FaNum)_UltraLight.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../webfonts/woff/IRANSansWeb(FaNum)_UltraLight.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../webfonts/ttf/IRANSansWeb(FaNum)_UltraLight.ttf') format('truetype');
+}
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: normal;
+	font-display: swap;
+	src: url('../webfonts/eot/IRANSansWeb(FaNum).eot');
+	src: url('../webfonts/eot/IRANSansWeb(FaNum).eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../webfonts/woff2/IRANSansWeb(FaNum).woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../webfonts/woff/IRANSansWeb(FaNum).woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../webfonts/ttf/IRANSansWeb(FaNum).ttf') format('truetype');
+}
+*{
+	direction:rtl;
+	font-family: iransans;
+}
+#introCarousel, .carousel-inner, .carousel-item, .carousel-item.active {
+    height: 100vh !important;
+}
+.navbar-brand {
+    margin-left: 0;
+}
+.kamacopyright{
+	position: absolute;
+    left: 15px;
+    bottom: 70px;
+    z-index: 999;
+	color: #ffffff85;
+	cursor: default;
+	direction: ltr;
+}
+ul.navbar-nav a.nav-link:hover{
+    color: #2980b9 !important;
+}
+nav.navbar ul.navbar-nav a{
+    padding: 6px 15px 6px;
+    line-height: 25px;
+    float: right;
+    display: inline-block;
+}
+nav.navbar ul.navbar-nav a i{
+	padding: 0 0 0 10px;
+    margin: 0 0 0 10px;
+    border-left: 1px solid #ffffff8c;
+    font-size: 15px;
+    float: right;
+}
+nav.navbar ul.navbar-nav .dashboard a{
+	padding: 4px 15px 4px;
+}
+
+nav.navbar ul.navbar-nav .dashboard a i{
+
+    border-left: 1px solid #2980b9ad
+
+}
+nav .btn-primary {
+    color: #fff;
+	background-color: #2980b9;
+	transition: .3s;
+}
+nav .btn-primary.focus, nav .btn-primary:focus, nav .btn-primary:hover {
+    color: #fff;
+    background-color: #145d8c;
+}
+.btn-warning {
+    color: #fff;
+    background-color: #f39c12;
+}
+.carousel-control-next-icon:after, .carousel-control-prev-icon:after {
+    font-weight: 700;
+    font-family: Font Awesome\ 6 Pro;
+    font-size: 1.7rem;
+}
+.kama-socials{
+
+    display: block;
+
+}
+.kama-socials a{
+	padding: 0 !important;
+    margin: 0 10px 0 0;
+}
+.kama-socials i {
+    font-size: 25px !important;
+    background: #2980b9;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 5px;
+    color: #fff;
+    padding: 7px !important;
+    margin: 0 !important;
+}
+
+.navbar-nav .dropdown-menu {
+    position: absolute;
+    left: 0;
+    top: 6vh;
+}
+
+.mobile-btn{
+	position: absolute;
+    z-index: 999;
+	bottom: 30%;
+    width: 100%;
+    text-align: center;
+}
+.mobile-btn .btn {
+    width: 45%;
+    padding: 10px 0;
+    margin: 1% !important;
+}
+footer .navbar{
+	z-index: 2000;
+    position: absolute;
+    width: 100%;
+    display: block;
+    bottom: 0;
+    background: #fff;
+    padding: 10px !important;
+}
+@media screen and (max-width:1300px){
+
+	nav.navbar .m-2 {
+		margin: .1rem!important;
+	}
+	.navbar-brand img{
+		height:40px !important;
+	}
+}
+@media screen and (max-width:991px){
+	.showmobile{
+		display: inline-block !important;
+	}	
+	.navbar-nav>a i{
+		border:0 !important
+	}
+	.carousel-indicators {
+		bottom: 20%;
+	}
+	.search-agent{
+		font-size: 12px !important;
+		margin: 0 0 0 5px !important;
+		border-radius: 5px;
+		padding: 4px 10px 1px !important;
+	}
+	.search-agent i{
+		padding: 0 0 5px 0 !important;
+   	 border: 0 !important;
+    font-size: 18px !important;
+	}
+	.droplink {
+		border: 1px solid #1266f1;
+    padding: 5px 10px !important;
+	border-radius: 5px;
+	}
+	.droplink i{
+	padding: 0 !important;
+	margin: 0 !important;
+	border:0 !important;
+	}
+	.navbar-brand{
+		padding:0;
+	}
+	.dropdown-menu .dropdown-item{
+		font-size: 13px !important;
+	}
+}
+@media screen and (max-width:480px){
+
+	.navbar-brand img{
+		height:30px !important;
+	}
+}
+@media screen and (max-width:375px){
+
+	.navbar-brand img{
+		height:25px !important;
+	}
+}
+
+@media screen and (max-width:320px){
+
+	.navbar-brand img{
+		height:18px !important;
+	}
+}

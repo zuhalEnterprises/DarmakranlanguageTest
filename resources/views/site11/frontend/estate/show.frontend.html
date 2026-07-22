@@ -1,0 +1,1275 @@
+@extends(ss('THEME') . '.frontend.layouts.intro.appnew_v2', [
+    'title' => !empty($estate->title) ? $estate->title : estateTypes($estate->estate_type) . ' - ' . ($estate->district->name ?? '') . ' ' . ($estate->city->name ?? ''),
+    'metaDescription' => substr(str_replace(array('✅️' , "\n") , ' ' , $estate->description),0,250),
+    'canonical' => $estate->url(),
+    'metaKeyword' => str_replace(' ',',' , !empty($estate->title) ? $estate->title : estateTypes($estate->estate_type) .' - '
+     . ($estate->district->name ?? '') . ' ' . ($estate->city->name ?? ''))
+])
+@section('head')
+    <link rel="stylesheet" href="/vendor/map/leaflet.css" />
+    <link rel="stylesheet" href="/assets/css/popper.css">
+    <script src="/frontend/js/modules/leaflet/leaf.js"></script>
+    <script src="/assets/vendors/validatejs/validate.min.js"></script>
+    <script src="/assets/vendors/validatejs/validate-persian.js"></script>
+    <link rel="stylesheet" href="/assets/css/sweetalert.css" />
+    <script src="/assets/js/sweetalert.min.js"></script>
+    <link href="/vendor/fancybox/style.css" type="text/css" rel="stylesheet">
+    <script src="/vendor/fancybox/jquery.fancybox.min.js"></script>
+    <link rel="stylesheet" media="screen" href="/vendor/simplebar/dist/simplebar.min.css"/>
+    <link rel="stylesheet" media="screen" href="/vendor/lightgallery.js/dist/css/lightgallery.min.css"/>
+    <link rel="stylesheet" media="screen" href="/vendor/tiny-slider/dist/tiny-slider.css"/>
+    <link rel="stylesheet" media="screen" href="/vendor/flatpickr/dist/flatpickr.min.css"/>
+    <link rel="stylesheet" media="screen" href="/vendor/expandable/jquery.expandable.css" />
+@endsection
+@section('main_content')
+    <!-- main -->
+    <main class="page-wrapper">
+        @include(ss('THEME') . '.frontend.layouts.header_v2')
+        <section class="container pt-5 mt-5">
+            <!-- Breadcrumb-->
+            <nav class="pt-md-3" aria-label="breadcrumb">
+
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">{{l('خانه')}}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    @if (!empty($estate->title))
+                        {{ $estate->title }}
+                    @else
+                        {{ estateTypes($estate->estate_type) }}
+                        {{ $estate->district->name ?? '' }} {{ $estate->city->name ?? '' }}
+                    @endif
+                </li>
+              </ol>
+            </nav>
+
+        </section>
+        <!-- Gallery-->
+        <style>
+        .more {
+            color: red;
+            font-weight: bold;
+        }
+        </style>
+        <section class="container">
+            <!-- Features + Sharing-->
+            <div class="d-flex justify-content-between align-items-center">
+                <ul class="d-flex mb-4 list-unstyled">
+                    <li class="me-3 pe-3 border-end">
+                        <b class="me-1">
+                            {{ $estate->room_count == 0 || $fieldList['room_count'][$estate->room_count] == 'بدون اتاق'  ? 'Studio' : l($fieldList['room_count'][$estate->room_count])}}
+                        </b>
+                        <i class="fi-bed mt-n1 lead align-middle text-muted"></i>
+                    </li>
+                    @if($estate->bed_count>0)
+                    <li class="me-3 pe-3 border-end">
+                        <b class="me-1">{{$estate->bed_count}}</b>
+                        <i class="fi-bath mt-n1 lead align-middle text-muted"></i>
+                    </li>
+                    @endif
+                    <li><b class="areaval">{{$estate->area}}</b> <span class="areakey">{{l('فوت مربع')}}</span></li>
+                </ul>
+                <div class="text-nowrap">
+                    @if (Auth::check())
+                    @if(
+                        $estate->user_id == Auth::user()->id ||
+                        $estate->percent_expert == 0 ||
+                        $currentUser->isAdmin() ||
+                        ($estate->expert_id>0 && $estate->expert && $estate->expert->isExpert() && ($estate->expiretime_expert == null || $estate->expiretime_expert > date('Y-m-d H:i:s')) && $currentUser->id == $estate->expert_id) ||
+                        ($estate->expert_id == null || !$estate->expert || !$estate->expert->isExpert() || ($estate->expiretime_expert != null && $estate->expiretime_expert < date('Y-m-d H:i:s')))
+                    )
+
+                    <a target="_blank" href="/estates/{{$estate->id}}/edit"
+                        class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2 edit-estate"
+                        type="button" data-bs-toggle="tooltip"  aria-label=" ویرایش ملک" title="{{l(' ویرایش ملک')}}">
+                        <i class="fi-pencil"></i>
+                    </a>
+
+                    @endif
+
+
+                    <button
+                        class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2 bookmark {{ $estate->isFavorite == 1 ? 'active' : '' }}"
+                        type="button" data-bs-toggle="tooltip"  aria-label="نشان کردن" title="{{l('نشان کردن')}}">
+                        <i class="fi-heart"></i>
+                    </button>
+                    @endif
+                    <div class="dropdown d-inline-block" data-bs-toggle="tooltip" title="{{l('اشتراک گذاری')}}">
+                        <button class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2"
+                            type="button" data-bs-toggle="dropdown"  aria-label="اشتراک گذاری"><i class="fi-share"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end my-1">
+                            <a style="text-decoration: none"
+                                href="whatsapp://send/?text={{ env('APP_URL') }}/v/{{ $estate->id }}">
+                                <button class="dropdown-item" type="button">
+                                    <i class="fi-whatsapp fs-base opacity-75 me-2"></i>{{l('واتساپ')}}
+                                </button>
+                            </a>
+                            <a style="text-decoration: none"
+                                href="https://t.me/share/url?url={{ env('APP_URL') }}/v/{{ $estate->id }}">
+                                <button class="dropdown-item" type="button">
+                                    <i class="fi-telegram fs-base opacity-75 me-2"></i>{{l('تلگرام')}}
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="container overflow-auto mb-4 pb-3" data-simplebar>
+            <div class="row g-2 g-md-3 gallery" data-thumbnails="true" style="min-width: 30rem;">
+              <div class="col-8"><a class="gallery-item rounded rounded-md-3" href="/img/real-estate/single/01.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;سرویس بهداشتی&lt;/h6&gt;"><img src="/img/real-estate/single/01.jpg" alt="Gallery thumbnail"></a></div>
+              <div class="col-4"><a class="gallery-item rounded rounded-md-3 mb-2 mb-md-3" href="/img/real-estate/single/02.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;اتاق خواب&lt;/h6&gt;"><img src="/img/real-estate/single/02.jpg" alt="Gallery thumbnail"></a><a class="gallery-item rounded rounded-md-3" href="/img/real-estate/single/03.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;پذیرایی&lt;/h6&gt;"><img src="/img/real-estate/single/03.jpg" alt="Gallery thumbnail"></a></div>
+              <div class="col-12">
+                <div class="row g-2 g-md-3">
+                  <div class="col"><a class="gallery-item rounded-1 rounded-md-2" href="/img/real-estate/single/04.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;اتاق خواب&lt;/h6&gt;"><img src="/img/real-estate/single/th04.jpg" alt="Gallery thumbnail"></a></div>
+                  <div class="col"><a class="gallery-item rounded-1 rounded-md-2" href="/img/real-estate/single/05.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;آشپزخانه&lt;/h6&gt;"><img src="/img/real-estate/single/th05.jpg" alt="Gallery thumbnail"></a></div>
+                  <div class="col"><a class="gallery-item rounded-1 rounded-md-2" href="/img/real-estate/single/06.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;پذیرایی&lt;/h6&gt;"><img src="/img/real-estate/single/th06.jpg" alt="Gallery thumbnail"></a></div>
+                  <div class="col"><a class="gallery-item rounded-1 rounded-md-2" href="/img/real-estate/single/07.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;سرویس بهداشتی&lt;/h6&gt;"><img src="/img/real-estate/single/th07.jpg" alt="Gallery thumbnail"></a></div>
+                  <div class="col"><a class="gallery-item more-item rounded-1 rounded-md-2" href="/img/real-estate/single/08.jpg" data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;سرویس بهداشتی&lt;/h6&gt;"><img src="/img/real-estate/single/th08.jpg" alt="Gallery thumbnail"><span class="gallery-item-caption fs-base"><span class='d-none d-md-inline'>سایر تصاویر</span> +5 </span></a></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        <!--section class="container overflow-auto mb-4 pb-3" data-simplebar>
+            <div class="row g-2 g-md-3 gallery" data-thumbnails="true">
+                @php
+                    $count = 1;
+                @endphp
+
+                @foreach ($images->where("360","=",0) as $url)
+                @if($count == 1)
+                <div class="col-8">
+                    <a class="gallery-item rounded rounded-md-3" href="{{getDomainImg($url->id)}}/upload/images/estate/{{ $url->url() }}">
+                        <img src="{{crop('/upload/images/estate/'.$url->url(),855,855)}}" alt="Gallery thumbnail">
+                    </a>
+                </div>
+                @endif
+                @if($count == 2 || $count == 3)
+
+                @if($count == 2)
+                <div class="col-4">
+                    <a class="gallery-item rounded rounded-md-3 mb-2 mb-md-3" href="{{getDomainImg($url->id)}}/upload/images/estate/{{ $url->url() }}">
+                        <img src="{{crop('/upload/images/estate/'.$url->url(),855,855)}}" alt="Gallery thumbnail">
+                    </a>
+                    @endif
+                    @if($count == 3)
+                    <a class="gallery-item rounded rounded-md-3" href="{{getDomainImg($url->id)}}/upload/images/estate/{{ $url->url() }}">
+                        <img src="{{crop('/upload/images/estate/'.$url->url(),855,855)}}" alt="Gallery thumbnail">
+                        <span class="gallery-item-caption fs-base"><span class='d-none d-md-inline'>سایر تصاویر</span> +5 </span>
+                    </a>
+                </div>
+                    @endif
+                @endif
+                @php
+                $count++;
+                @endphp
+                @endforeach
+            </div>
+        </section-->
+        <section class="container mb-5 pb-1">
+            <div class="row">
+                <div class="col-md-7 mb-md-0 mb-4">
+                    <h2 class="h4 mb-4 pb-4 border-bottom">
+                        @if ($estate->type == 1)
+                        @if ($estate->price > 0)
+                        <span class="d-inline-block ms-1 fs-base fw-normal text-body">قیمت: </span>
+                        <span class="priceval">{{ toPersianNumbers($estate->price) }}</span>
+                        <span class="d-inline-block ms-1 fs-base fw-normal text-body pricekey">{{l('درهم')}}</span>
+                        @else
+                        {{l('توافقی')}}
+                        @endif
+                        @endif
+                        @if ($estate->type == 2)
+                        <span class="priceval">{{ toPersianNumbers($estate->rent) }}</span>
+
+                        <span class="d-inline-block ms-1 fs-base fw-normal text-body">
+                            <span class="pricekey">{{l('درهم')}}</span>
+                            @php
+                            switch($estate->rentfrequency)
+                            {
+                                case "1": $rentfrequency = ' /روزانه'; break;
+                                case "7": $rentfrequency = ' /هفتگی'; break;
+                                case "30": $rentfrequency = ' /ماهانه'; break;
+                                case "365": $rentfrequency = ' /سلانه'; break;
+                                default: $rentfrequency = '';
+                            }
+                            echo $rentfrequency;
+                            @endphp
+                        </span>
+                        @endif
+                    </h2>
+                    <!-- Overview-->
+                    <div class="mb-4 pb-md-3">
+                        <h3 class="h5">توضیحات</h3>
+                        <p class="mb-1 line-h18">
+                            <?php echo nl2br($estate->description); ?>
+                        </p>
+                    </div>
+                    <!-- Property Details-->
+                    <div class="mb-4 pb-md-3">
+                        <h3 class="h4">جزئیات ملک</h3>
+                        <ul class="list-unstyled mt-n2 mb-0 row  row-cols-2">
+                            <li class="mt-2 mb-0 col"><b>{{l('نوع')}}: </b> {{ estateTypes($estate->estate_type) }}</li>
+                            <li class="mt-2 mb-0 col"><b>{{l('شماره آگهی')}}:</b> {{ $estate->id }}</li>
+                            <li class="mt-2 mb-0 col"><b>{{l('متراژ زمین')}}: </b> <span class="areaval">{{ $estate->area }}</span> <span class="areakey">{{l('فوت مربع')}}</span></li>
+
+                            @if (!empty($estate->project_id) && isset($estate->project))
+                                <li class="mt-2 mb-0 col"><b>{{l('پروژه')}}: </b>
+                                    <a target="_blank" href="{{$estate->project->post_id>0 && isset($estate->project->post) ? $estate->project->post->url() : 'javascript:void(0)'}}">
+                                    {{ $estate->project->name }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if (!empty($estate->manufacturer_id))
+                                <li class="mt-2 mb-0 col"><b>{{l('سازنده')}}: </b>
+                                    <a target="_blank" href="{{$estate->manufacturer->post_id>0 && isset($estate->project->post) ? $estate->manufacturer->post->url() : 'javascript:void(0)'}}">
+                                    {{ $estate->manufacturer->name }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if (!empty($estate->floor_count))
+                                <li class="mt-2 mb-0 col"><b>{{l('طبقه')}}: </b>
+                                    {{ l($fieldList['floor_count'][$estate->floor_count]) }} </li>
+                            @endif
+                            @if(ss('SITE_ID')!= 4)
+                            @if (!empty($estate->geography))
+                                <li class="mt-2 mb-0 col"><b>{{l('موقعیت')}}: </b>
+                                    {{ $fieldList['geography'][$estate->geography] }} </li>
+                            @endif
+                            @endif
+                            @if (!empty($estate->built_year))
+                            @if(env('COUNTRY') != 'UAE')
+                                <li class="mt-2 mb-0 col"><b>{{l('سال ساخت')}}: </b> {{ buildYear($estate->built_year) }}
+                                </li>
+                            @endif
+                            @endif
+                            @if (!empty($estate->document_type))
+                            @if(env('COUNTRY') != 'UAE')
+                                <li class="mt-2 mb-0 col"><b> {{l('سند')}}: </b>
+                                    {{ $fieldList['document_type'][$estate->document_type] }}
+                                </li>
+                                @endif
+                            @endif
+                            @if (!empty($estate->room_count))
+                                <li class="mt-2 mb-0 col"><b>{{l('تعداد اتاق')}}:</b>
+                                    {{ $fieldList['room_count'][$estate->room_count] != l('بدون اتاق') ? l($fieldList['room_count'][$estate->room_count])  : l('بدون اتاق') }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->structure_type))
+                                <li class="mt-2 mb-0 col"><b> نوع سازه: </b>
+                                    {{ $fieldList['structure_type'][$estate->structure_type] }}
+                                </li>
+                            @endif
+                            @if(env('COUNTRY') != 'UAE')
+                            @if (!empty($estate->floor_area))
+                                <li class="mt-2 mb-0 col"><b>متراژ کف:</b> {{ $estate->floor_area }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->built_area))
+                                <li class="mt-2 mb-0 col"><b>متراژ بنا:</b> {{ $estate->built_area }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->front_area))
+                                <li class="mt-2 mb-0 col"><b>متراژ بر:</b> {{ $estate->front_area }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->street_width))
+                                <li class="mt-2 mb-0 col"><b>عرض گذر:</b> {{ $estate->street_width }} متر
+                                </li>
+                            @endif
+                            @if (!empty($estate->build_license))
+                                <li class="mt-2 mb-0 col"><b>پروانه ساخت:</b>
+                                    {{ $fieldList['build_license'][$estate->build_license] }}
+                                </li>
+                            @endif
+                            @endif
+                            @if (!empty($estate->unit_in_floor))
+                                <li class="mt-2 mb-0 col"><b> {{l('واحد در طبقه')}}: </b> {{ l($fieldList['unit_in_floor'][$estate->unit_in_floor]) }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->floor))
+                                <li class="mt-2 mb-0 col"><b>{{l('شماره طبقه')}}:</b>
+                                    {{ l($fieldList['floor'][$estate->floor]) }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->floor_start))
+                                <li class="mt-2 mb-0 col"><b>{{l('شروع طبقات از')}}:</b>
+                                    {{ $fieldList['floor_start'][$estate->floor_start] }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->residence_type))
+                                <li class="mt-2 mb-0 col"><b>{{l('وضعیت سکونت')}}:</b>
+                                    {{ l($fieldList['residence_type'][$estate->residence_type]) }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->floor_type))
+                                <li class="mt-2 mb-0 col"><b>{{l('نوع طبفات')}}:</b>
+                                    {{ getvalueMeta($fieldList, $estate->floor_type, 'floor_type') }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->position_type))
+                                <li class="mt-2 mb-0 col"><b>{{l('موقعیت مکانی')}}:</b>
+                                    {{ l($fieldList['position_type'][$estate->position_type]) }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->usage_type))
+                                <li class="mt-2 mb-0 col"><b>{{l('کاربری')}}:</b>
+                                    {{ l($fieldList['usage_type'][$estate->usage_type]) }}
+                                </li>
+                            @endif
+                            @if (false && $estate->type == 2 && !empty($estate->rent_type))
+                                <li class="mt-2 mb-0 col"><b>{{l('نوع اجاره')}}:</b>
+                                    {{ l($fieldList['rent_type'][$estate->rent_type]) }}
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+                    <!-- Amenities-->
+                    @if (!empty($estate->facilities) || !empty($estate->wc) || !empty($estate->kitchen))
+                    <div class="mb-4 pb-md-3">
+                        <h3 class="h4">امکانات</h3>
+                        <ul class="list-unstyled row row-cols-lg-2 row-cols-md-2 row-cols-2 gy-1 mb-1 text-nowrap">
+                            @if (!empty($estate->facilities))
+                            @foreach (json_decode($estate->facilities, true) as $value)
+                            <li class="col">
+
+                                @if (!empty(IconFacility($fieldList['facilities'][$value])))
+                                    <img class="mt-n1 me-2 fs-lg align-middle" src="/frontend/show/svg/{{ IconFacility($fieldList['facilities'][$value]) ?? '' }}.svg"
+                                        alt="{{l($fieldList['facilities'][$value]) }}"  width="18px" height="18px" />
+                                @endif
+                                {{l($fieldList['facilities'][$value]) }}
+                            </li>
+                            @endforeach
+                            @endif
+                            @if (!empty($estate->wc))
+                                <li class="col">
+                                    @if (!empty(IconFacility($fieldList['wc'][$estate->wc] ?? '')))
+                                        <img class="mt-n1 me-2 fs-lg align-middle"  src="/frontend/show/svg/{{ IconFacility($fieldList['wc'][$estate->wc] ?? '') }}.svg"
+                                            width="16px" height="16px" alt="{{ $fieldList['wc'][$estate->wc] }}"/>
+                                    @endif
+                                    {{ $fieldList['wc'][$estate->wc] }}
+                                </li>
+                            @endif
+                            @if (!empty($estate->kitchen))
+                                @foreach (json_decode($estate->kitchen, true) as $value)
+                                    <li class="col">
+                                        @if (!empty(IconFacility($fieldList['kitchen'][$value])))
+                                            <img class="mt-n1 me-2 fs-lg align-middle"  src="/frontend/show/svg/{{ IconFacility($fieldList['kitchen'][$value]) ?? '' }}.svg"
+                                                width="16px" height="16px"  alt="{{ $fieldList['kitchen'][$value] }}"/>
+                                        @endif
+                                        {{ $fieldList['kitchen'][$value] }}
+                                    </li>
+                                @endforeach
+                            @endif
+                            @if (!empty($estate->heating_cooling))
+                                @foreach (json_decode($estate->heating_cooling, true) as $value)
+                                    <li class="col">
+                                        @if (!empty(IconFacility($fieldList['heating_cooling'][$value])))
+                                            <img class="mt-n1 me-2 fs-lg align-middle"  src="/frontend/show/svg/{{ IconFacility($fieldList['heating_cooling'][$value]) ?? '' }}.svg"
+                                                width="16px" height="16px" alt="{{ $fieldList['heating_cooling'][$value] }}" />
+                                        @endif
+                                        {{ $fieldList['heating_cooling'][$value] }}
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                    @endif
+                    @if (!empty($estate->conditions))
+                    <div class="card border-0 bg-secondary mb-4">
+                        <div class="card-body">
+                            <h3 class="h5">{{l('شرایط ملک')}}</h3>
+                            <ul class="list-unstyled row row-cols-lg-3 row-cols-md-2 row-cols-2 gy-1 mb-1 text-nowrap">
+                                @foreach (json_decode($estate->conditions, true) as $value)
+                                    <li class="col">
+                                        @if (!empty($fieldList['conditions'][$value]) &&  !empty(IconFacility($fieldList['conditions'][$value])))
+                                            <img src="/frontend/show/svg/{{ IconFacility($fieldList['conditions'][$value]) ?? '' }}.svg"
+                                                width="18px" height="18px" />
+                                        @endif
+                                        {{l($fieldList['conditions'][$value]) }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    @endif
+                    @if($currentUser && ($currentUser->isExpert() || $currentUser->isAdmin()))
+                    <div class="mb-4 pb-4 border-bottom" >
+                        <div class="d-flex flex-sm-row flex-column align-items-sm-center align-items-stretch justify-content-between">
+                            <a class="btn btn-outline-primary mb-sm-0 mb-3" href="#modal-review" data-bs-toggle="modal">
+                                <i class="fi-edit ms-1"></i>
+                                {{l('ثبت عملکرد')}}
+
+                            </a>
+                            <div class="d-flex align-items-center ms-sm-4">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Review-->
+                    <div class="opertionlogs">
+                    </div>
+                    @endif
+                </div>
+                <!-- Sidebar-->
+                <aside class="col-lg-4 col-md-5 ms-lg-auto pb-1">
+                    <!-- Contact card-->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start justify-content-between"><a class="text-decoration-none" href="real-estate-vendor-properties.html"><img class="rounded-circle mb-2" src="/img/avatars/22.jpg" width="60" alt="Avatar">
+                                <h5 class="mb-1">فلوید مایلز</h5>
+                                <div class="mb-1"><span class="star-rating"><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i></span><span class="me-1 fs-sm text-muted">(45 نظر ثبت شده)</span>
+                                </div>
+                                <p class="text-body">نماینده گروه امپراتوری املاک</p></a>
+                            <div class="me-4 flex-shrink-0"><a class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2" href="#"><i class="fi-facebook"></i></a><a class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2" href="#"><i class="fi-linkedin"></i></a></div>
+                            </div>
+                            <ul class="list-unstyled border-bottom mb-4 pb-4">
+                            <li><a class="nav-link fw-normal p-0" href="tel:3025550107"><i class="fi-phone mt-n1 me-2 align-middle opacity-60"></i>(302) 555-0107</a></li>
+                            <li><a class="nav-link fw-normal p-0" href="mailto:floyd_miles@email.com"><i class="fi-mail mt-n1 me-2 align-middle opacity-60"></i>floyd_miles@email.com</a></li>
+                            </ul>
+                            <!-- Contact form-->
+
+                        </div>
+                    </div>
+                    <!-- Location (Map)-->
+                    <div class="pt-2">
+                        <!-- Location (Map)-->
+                        @if (!empty($estate) && !empty($estate->latitude))
+                        <div class="pt-2">
+                            <div id="map" style="width: 100%;height:300px;"
+                                class="leaflet-container leaflet-fade-anim leaflet-grab leaflet-retina leaflet-touch leaflet-touch-drag leaflet-touch-zoom map-container-show part--map z-depth-1-half h-[200px] w-full">
+                            </div>
+                            <p class="mb-0 fs-sm text-center">
+                                @if(!empty(Auth::User()) && (!empty($estate->expert_id==Auth::User()->id) || $currentUser->isAdmin()))
+                            {{ $estate->city->name ?? '' }}
+                                {{ $estate->district && $estate->district->name ? " ".$estate->district->name:"" }}
+                                {{!empty($estate->address)?" ".$estate->address:""}}
+                                {{!empty($estate->unit_no)?" Unit ".$estate->unit_no:""}}
+                                @else
+                                {{ $estate->city->name ?? '' }}
+                                {{ $estate->district && $estate->district->name ? " ،".$estate->district->name:"" }}
+                                @endif
+                            </p>
+                        </div>
+                        <script>
+
+                                var map = L.map('map').setView([{{ $estate->latitude }} , {{ $estate->longitude }}], 13);
+                                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                }).addTo(map);
+                                L.marker([{{ $estate->latitude }} , {{ $estate->longitude }}]).bindPopup('I am a green leaf.').addTo(map);
+
+                        </script>
+                        @endif
+                        @if($estate->city)
+                        <div class="mb-4 pb-md-3 mt-5">
+                            <h3 class="h4">لینک‌های مفید</h3>
+
+                            <ul class="list-unstyled mt-n2 mb-0 row row-cols-1">
+
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}">املاک در {{$estate->city->name}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}&&districts={{($estate->district->id ?? '')}}">املاک در {{($estate->district->name ?? '')}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?city_id={{$estate->city->id}}&type={{$estate->type}}">املاک {{($estate->type == 2 ? 'برای اجاره' : 'فروشی')}} در {{$estate->city->name}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?city_id={{$estate->city->id}}&districts={{($estate->district->id ?? '')}}&type={{$estate->type}}">املاک {{($estate->type == 2 ? 'برای اجاره' : 'فروشی')}} در {{($estate->district->name ?? '')}} {{$estate->city->name}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?city_id={{$estate->city->id}}&type={{$estate->type}}&estateTypes={{$estate->estate_type}}">{{estateTypes($estate->estate_type)}} {{($estate->type == 2 ? 'برای اجاره' : 'فروشی')}} در {{$estate->city->name}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?city_id={{$estate->city->id}}&districts={{($estate->district->id ?? '')}}&type={{$estate->type}}&estateTypes={{$estate->estate_type}}">{{estateTypes($estate->estate_type)}} {{($estate->type == 2 ? 'برای اجاره' : 'فروشی')}} در {{($estate->district->name ?? '')}} {{$estate->city->name}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}&districts={{($estate->district->id ?? '')}}&estateTypes={{$estate->estate_type}}">املاک {{estateTypes($estate->estate_type)}} در {{$estate->city->name}}</a>
+                                </li>
+                                <li class="mt-2 mb-0 col">
+                                    <a href="/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}&districts={{($estate->district->id ?? '')}}&estateTypes={{$estate->estate_type}}">املاک {{estateTypes($estate->estate_type)}} در {{($estate->district->name ?? '')}}</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                        @endif
+                    </div>
+                </aside>
+            </div>
+        </section>
+        <!-- Post content-->
+        <section class="container mb-5 pb-1">
+            <div class="row">
+                <div class="col-md-8 mb-md-0 mb-4">
+                    <span class="badge bg-success me-2 mb-2">@if(env('COUNTRY') != 'UAE'){{ toAgoTime($estate->created_at) }} @else {{$estate->created_at}} @endif</span>
+                    <span class="badge bg-info me-2 mb-2">{{ estateTypes($estate->estate_type) }}</span>
+                    <section>
+                        <span>
+                            <div class="text-nowrap d-none">
+                                <button class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2" type="button" data-bs-toggle="tooltip" title="Add to Wishlist"><i class="fi-heart"></i></button>
+                                <div class="dropdown d-inline-block" data-bs-toggle="tooltip" title="Share">
+                                <button class="btn btn-icon btn-light-primary btn-xs shadow-sm rounded-circle ms-2 mb-2" type="button" data-bs-toggle="dropdown"><i class="fi-share"></i></button>
+                                <div class="dropdown-menu dropdown-menu-end my-1">
+                                    <button class="dropdown-item" type="button"><i class="fi-facebook fs-base opacity-75 me-2"></i>Facebook</button>
+                                    <button class="dropdown-item" type="button"><i class="fi-twitter fs-base opacity-75 me-2"></i>Twitter</button>
+                                    <button class="dropdown-item" type="button"><i class="fi-instagram fs-base opacity-75 me-2"></i>Instagram</button>
+                                </div>
+                                </div>
+                            </div>
+                        </span>
+                        <p class="mb-2 pb-1 fs-lg">
+                            @if(!empty(Auth::User()) && (!empty($estate->expert_id==Auth::User()->id) || $currentUser->isAdmin()))
+                           {{ $estate->city->name ?? '' }}
+                            {{ $estate->district && $estate->district->name ? " ".$estate->district->name:"" }}
+                            {{!empty($estate->address)?" ".$estate->address:""}}
+                            {{!empty($estate->unit_no)?" Unit ".$estate->unit_no:""}}
+                            @else
+                            {{ $estate->city->name ?? '' }}
+                            {{ $estate->district && $estate->district->name ? " ".$estate->district->name:"" }}
+                            @endif
+                        </p>
+                    </section>
+                </div>
+                <aside class="col-lg-5 col-md-5 ms-lg-auto pb-1">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <div class="modal fade" id="modalCentered" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">{{l('تنظمیات')}}</h4>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <div class="mb-3 row align-items-center">
+                                                    <label class="col-md-3 col-form-label" for="currency">{{l('واحد پولی')}}</label>
+                                                    <div class="col-md-9">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" id="currency-dollar" type="radio" name="currency" value="dollar">
+                                                            <label class="form-check-label" for="currency-dollar">{{l('دلار')}}</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" id="currency-dirham" type="radio" name="currency" value="dirham" checked>
+                                                            <label class="form-check-label" for="currency-dirham">{{l('درهم')}}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3 row align-items-center">
+                                                <label class="col-md-3 col-form-label" for="area-unit">{{l('واحد مساحت')}}</label>
+                                                <div class="col-md-9">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" id="area-meter" type="radio" name="area" value="meter">
+                                                        <label class="form-check-label" for="area-meter">{{l('مترمربع')}}</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" id="area-feet" type="radio" name="area" value="feet" checked>
+                                                        <label class="form-check-label" for="area-feet">{{l('فوت مربع')}}</label>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">{{l('بستن')}}</button>
+                                            <button class="btn btn-primary btn-shadow btn-sm" type="button" id="saveSettings">{{l('ذخیره')}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-xs" type="button" data-bs-toggle="modal" data-bs-target="#modalCentered">{{l('تنظیمات')}}</button>
+                        </div>
+                        <div class="text-nowrap">
+
+                        </div>
+                    </div>
+
+
+
+
+                    @if(!empty($estate->expert))
+                    <!-- Contact card-->
+                    @if(app('request')->input('he') == '')
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start justify-content-between">
+                                <a class="text-decoration-none" href="/agents/{{!empty($estate->expert)?$estate->expert->id:''}}">
+                                    <div class="d-flex gap-3 justify-content-left">
+                                        <img class="rounded-circle mb-2" src="{{ !empty($estate->expert) ? ($estate->expert->photo() ? $estate->expert->photo() : noImage()) : noImage() }}" width="60" alt="{{!empty($estate->expert)?$estate->expert->fullname():''}}">
+
+                                        <div class="text-body">
+                                            <h5 class="mb-1">
+                                                {{!empty($estate->expert)?$estate->expert->fullname():''}}
+                                            </h5>
+                                            <p class="mb-1">
+                                            @if(!empty($estate->expert))
+                                                @foreach($estate->expert->roles as $role)
+                                                    @if($role->id == 9)
+                                                    {{($estate->expert->activity_type == 1 ? l('مشاور فروش') : ($estate->expert->activity_type == 2 ? l('مشاور اجاره') : l('مشاور فروش و اجاره')))}}
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+
+                            </div>
+                            <div class="d-flex gap-1 justify-content-center mt-5">
+                                    @if($estate->expert->phone != '')
+                                    <a class="btn btn-secondary fw-bold" style="color:red" href="tel:{{!empty($estate->expert)?$estate->expert->phone:''}}">
+                                        <i class="fi-phone mt-n1 me-2 align-middle opacity-60"></i>
+                                        Call
+                                    </a>
+                                    @endif
+                                    <a class="btn btn-secondary fw-bold" href="mailto:{{!empty($estate->expert)?$estate->expert->username:''}}">
+                                        <i class="fi-mail mt-n1 me-2 align-middle opacity-60"></i>
+                                        Email
+                                    </a>
+                                    @if($estate->expert->whatsapp != '')
+                                    <a class="btn btn-secondary fw-bold" style="color:green" href="https://wa.me/{{$estate->expert->whatsapp}}">
+                                        <i class="fi-whatsapp mt-n1 me-2 align-middle opacity-60" ></i>
+                                        Whatsapp
+                                    </a>
+                                    @endif
+                                </div>
+
+                        </div>
+                    </div>
+                    @endif
+                    @endif
+                    @if($estate->district && $estate->district->name && $estate->district->post_id>0 && isset($estate->district->post))
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start justify-content-between">
+                                <a href="" target="_blank">
+                                    <img src="{{$estate->district->post->img()}}" style="width: 100px">
+
+                                    <div>
+                                        <h3>
+                                        {{$estate->district->name}}
+                                        </h3>
+                                        <div>
+                                            See the community attractions and lifestyle
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                </aside>
+            </div>
+        </section>
+        @if (count($similarEstates) > 0)
+        <!-- Recently viewed-->
+        <section class="container mb-5 pb-2 pb-lg-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="h3 mb-0">Similar Properties</h2>
+                <a class="btn btn-link fw-normal p-0" href="/cities">View all<i class="fi-arrow-long-right ms-2"></i></a>
+            </div>
+            <div class="tns-carousel-wrapper tns-controls-outside-xxl tns-nav-outside tns-nav-outside-flush mx-n2">
+                <div class="tns-carousel-inner row gx-4 mx-0 pt-3 pb-4" data-carousel-options="{&quot;items&quot;: 4, &quot;responsive&quot;: {&quot;0&quot;:{&quot;items&quot;:1},&quot;500&quot;:{&quot;items&quot;:2},&quot;768&quot;:{&quot;items&quot;:3},&quot;992&quot;:{&quot;items&quot;:4}}}">
+                    @foreach ($similarEstates as $estate)
+                    <div class="col">
+                        <div class="card shadow-sm card-hover border-0 h-100">
+                            <div class="card-img-top card-img-hover">
+                                <a class="img-overlay" href="{{ $estate->url() }}"></a>
+                                <div class="position-absolute start-0 top-0 pt-3 ps-3">
+                                    <span class="d-table badge bg-info">{{toPersianDate($estate->showdate)}}</span>
+                                </div>
+                                @if(\Auth::user())
+                                <div class="content-overlay end-0 top-0 p-3 ps-3">
+                                    <button class="itemFavorite_{{$estate->id}} text-[20px]  {{count($estate->favorites)>0?'text-blue-500':'text-gray-200'}}  btn btn-icon btn-light btn-xs text-primary rounded-circle" type="button" data-bs-toggle="tooltip" data-bs-placement="right" onclick="addFavorite({{$estate->id}}) " data-id="{{$estate->id}}">
+                                        <i class=" fa-solid fa-bookmark"></i>
+                                    </button>
+                                </div>
+                                @endif
+                                <img src="{{$estate->coverImage()}}" alt="{{$estate->title}}">
+                            </div>
+                            <div class="card-body position-relative pb-3">
+                                <h4 class="mb-1 fs-xs fw-normal text-uppercase text-primary">For sale</h4>
+                                <h3 class="h6 mb-2 fs-base">
+                                    <a class="nav-link stretched-link" href="{{ $estate->url() }}">{{estateTypes($estate->estate_type)}} | {{$estate->area}} {{l('فوت مربع')}}</a>
+                                </h3>
+                                <p class="mb-2 fs-sm text-muted">
+                                    {{ $estate->city->name ?? '' }}
+                                    {{ $estate->district && $estate->district->name ? " ".$estate->district->name:"" }}
+                                </p>
+                                <div class="fw-bold"><i class="fi-cash mt-n1 me-2 lead align-middle opacity-70"></i>{{ toPersianNumbers($estate->price) }} {{l('ت')}}</div>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-center mx-3 pt-3 text-nowrap">
+                                <span class="d-inline-block mx-1 px-2 fs-sm">
+                                    {{ (int)getFeatureValue($featureValues, $estate->room_count) == 0 ? l(getFeatureValue($featureValues, $estate->room_count)) : getFeatureValue($featureValues, $estate->room_count)}}<i class="fi-bed ms-1 mt-n1 fs-lg text-muted"></i>
+                                </span>
+                                @if($estate->bed_count>0)
+                                <span class="d-inline-block mx-1 px-2 fs-sm">{{$estate->bed_count}}<i class="fi-bath ms-1 mt-n1 fs-lg text-muted"></i></span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+    </main>
+
+
+    @include(ss('THEME') . '.frontend.layouts.footer_v2', ['cssClass' => 'intro'])
+    <!-- Review modal-->
+    <div class="modal fade" id="modal-review" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header d-block position-relative border-0 pb-0 px-sm-5 px-4">
+                    <h4 class="modal-title mt-4 text-center font-vazir">{{l('ثبت عملکرد برای ملک')}}</h4>
+                    <button class="btn-close position-absolute top-0 end-0 mt-3 me-3" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-sm-5 px-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="type">{{l('نوع')}} </label>
+                        <select class="form-control form-select" id="type" name="type">
+                            <option value="1" >{{l('کارشناسی')}}</option>
+                            <option value="2" >{{l('سرویس')}}</option>
+                            <option value="4" >{{l('توضیحات')}}</option>
+                            <option value="6" >{{l('فروش ویژه')}}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 " id="customer_id" style="display:none">
+                        <label class="form-label" for="customer_id"> {{l('مشتری')}} </label>
+                        <select class="form-control form-select" id="customer_id" name="customer_id">
+                        <option></option>
+                        @if($customers)
+                        @foreach ($customers as $customer)
+                        <option value="{{$customer->id}}" >{{$customer->name}}</option>
+                        @endforeach
+                        @endif
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="comment">{{l('توضیحات')}} </label>
+                        <textarea class="form-control" id="comment" name="comment" rows="5" placeholder="{{l('توضیحات')}}" required></textarea>
+                        <div class="invalid-feedback">{{l('نظر خود را ثبت کنید')}}</div>
+                    </div>
+                    <button class="btn btn-primary d-block w-100 mb-4 btnOperation" type="submit">{{l('ثبت عملکرد')}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+<script src="/vendor/lightgallery.js/dist/js/lightgallery.min.js"></script>
+    <script src="/vendor/lg-fullscreen.js/dist/lg-fullscreen.min.js"></script>
+    <script src="/vendor/lg-zoom.js/dist/lg-zoom.min.js"></script>
+    <script src="/vendor/lg-thumbnail.js/dist/lg-thumbnail.min.js"></script>
+@section('js')
+
+    <script src="/frontend/vendor/sweetalert2.all.js"></script>
+
+    <script>
+        const toast = swal.mixin({
+            toast: true,
+            position: 'bottom-left',
+            showConfirmButton: false,
+            timer: 2500
+        });
+        $(document).ready(function(){
+
+            $('#others_text').hide()
+            $('.flexRadioDefault').on('change',function(){
+                var currentTest = $(this).val();
+                console.log(currentTest);
+                if($('#r9').prop('checked')){
+                    console.log('ok');
+                    $('#others_text').show()
+                }else{
+                    $('#others_text').hide()
+                }
+
+            })
+        })
+        var userID = '{{ $currentUser->id ?? 0 }}';
+        @if($currentUser && ($currentUser->isExpert() || $currentUser->isAdmin()))
+        getOperations({{ $estate->id }});
+        @endif
+        @if($currentUser)
+        getMessages({{ $estate->id }});
+        @endif
+        var CSRF_TOKEN = '{{ csrf_token() }}';
+        function getMessages(chat_id) {
+            if (chat_id != 0) {
+                $.ajaxSetup({headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}});
+                $.ajax({
+                    url: '/chatsEstate/' + chat_id,
+                    type: "GET",
+                    success: function(data) {
+                        var res = data.messages
+                        var itemList = '';
+                        if (res != null) {
+                            $('#loading').hide();
+                            $.each(res, function(key, value) {
+                                var cssClass = userID == value.user.id ? '' : 'flex-row-reverse';
+                                var cssClass1 = userID == value.user.id ? (
+                                    'bg-white pr-2 pl-2 p-1 w-fit text-gray-500 text-18px border border-gray-200 rounded-25 rounded-tr-none'
+                                    ) : (
+                                    'bg-F8F5EE pr-2 pl-2 p-1 w-34 text-gray-500 text-18px border border-orange-500 rounded-25 rounded-tl-none'
+                                    );
+                                itemList += '<div class="flex gap-2 mb-3 ' + cssClass + ' ">' +
+                                    '<div class="w-66px h-[66px] rounded-full overflow-hidden">' +
+                                    '<img class="" src="' + value.user.photo +
+                                    '" alt="profile-chat"/>' +
+                                    '</div>' +
+                                    '<div class="' + cssClass1 + '">' +
+                                    ' <p id=" js_chat_user">' + value.body + '</p>' +
+                                    ' <span class="flex justify-end">' + value.date + '</span>' +
+                                    '</div>' +
+                                    '</div>';
+                            });
+                            $(".js_chat_box").html(itemList);
+                        }
+                    }
+                });
+            }
+        }
+        $(document).ready(function() {
+            $('#customer_id').hide()
+            $("#type").on( "change", function() {
+                var currentValue = $(this).val();
+                switch (currentValue) {
+                    case '1':
+                        $('#customer_id').hide()
+                        break;
+                    case '2':
+                        $('#customer_id').show()
+                        break;
+                    case '3':
+                        $('#customer_id').hide()
+                        break;
+                    case '4':
+                        $('#customer_id').hide()
+                        break;
+                    default:
+                    $('#customer_id').hide()
+                }
+            })
+            $(".panorma20").click(function(){
+                $.ajax({
+                    url:"/panorma1?panorama="+$(this).attr('src')+"&title=&author="+$(this).attr('name')+"&preview="+$(this).attr('src'),
+                    type: "get",
+                    beforeSend: function() {
+                        $("#spiner").removeClass("d-none");
+                    }
+                }).done(function(data) {
+                    $("#pa1").html(data);
+                });
+            $("#panorma").show();
+            //$("panormasrc").attr("src",")
+        });
+        $("#close1").click(function(){
+            $("#panorma").hide();
+        })
+        var chatID = 0;
+        // send a chat message
+        $('input[name="message"]').keydown(function(event) {
+            if (event.keyCode == 13) {
+                $('#send-message').trigger('click');
+                //event.preventDefault();
+            }
+        });
+        var chat_id, expertCode, receiver_id, subject, estateid;
+        $('#js_chat_button').on('click', function(e) {
+            e.preventDefault()
+            chat_id = $(this).attr('data-chatid');
+            receiver_id = $(this).data('expertid');
+            expertCode = $(this).data('expertcode');
+            estateid = $(this).data('estateid')
+            subject = " {{l('گفتگوی ملک')}} " + estateid;
+            var message = $('#js_chat_input').val();
+            if (message.length == 0) {
+                $('#js_chat_input').focus();
+                return false;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            });
+            $.ajax({
+                url: '/chats',
+                type: "POST",
+                data: {
+                    'type': 'expert',
+                    'receiver_id': receiver_id,
+                    'subject': subject,
+                    'message': message,
+                    'estate_id': estateid
+                },
+                success: function(data) {
+                    var res = data.data;
+                    var chatMsg = res.msg;
+                    $(".chat-" + receiver_id).attr('data-chatid', '' + res.chat_id).trigger(
+                        "refresh");
+                    if (chatMsg != null) {
+                        $('#js_chat_input').val('');
+                        swal({
+                            title: "{{l('سوال شما با موفقیت ثبت شد')}}",
+                            message: "",
+                            confirmButtonColor: '#025EC6',
+                            confirmButtonText: '{{l('باشه')}}',
+                            type: "success",
+                            timer: 2000
+                        });
+                        getMessages({{ $estate->id }});
+                    }
+                },
+            });
+        });
+        $(".btncall").click(function() {
+            @if (
+                $estate->phone == '09120000000' &&
+                    $estate->divar != '' &&
+                    !empty(Auth::user()) &&
+                    $estate->expert_id == Auth::user()->id)
+                $.get('/api/divar/tel/{{ $estate->divar }}', function(data, status) {
+                    if (data.status) {
+                        $('.js_showtele ').html(data.result)
+                    }
+                });
+            @endif
+            $("#myModal").modal('show');
+        });
+        $(".btnOperation").click(function() {
+            estate_id = {{ $estate->id }};
+            comment = $('#comment').val();
+            type = $('#type').val();
+            customer_id = $('.customer_id').val();
+            if (comment.length == 0) {
+                $('#comment').focus();
+                return false;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            });
+            $.ajax({
+                url: '/estate/addOperation',
+                type: "POST",
+                data: {
+                    'type': type,
+                    'customer_id': customer_id,
+                    'subject': subject,
+                    'comment': comment,
+                    'estate_id': estate_id
+                },
+                success: function(data) {
+                    var res = data.data;
+                    var operation = res.operation_id;
+                    $('#comment').val('');
+                    $('.customer_id').val('');
+                    $('#modal-review').modal('toggle');
+                    swal({
+                        title: "{{l('عملکرد با موفقیت ثبت شد')}}",
+                        message: "",
+                        confirmButtonColor: '#025EC6',
+                        confirmButtonText: '{{l('باشه')}}',
+                        type: "success",
+                        timer: 2000
+                    });
+                    getOperations({{ $estate->id }});
+                },
+            });
+        });
+        $(".close").click(function() {
+            $("#myModal").modal('hide');
+        });
+    });
+    function getOperations(estate_id)
+    {
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}});
+        $.ajax({
+            url: '/operationsEstate/' + estate_id,
+            type: "GET",
+            success: function(data) {
+                //console.log(data.html);
+                $(".opertionlogs").html(data.html);
+            }
+        });
+    }
+    function copy2() {
+        navigator.clipboard.writeText($('#copymobile').val());
+    }
+    function changeeita() {
+        $("#eita").attr("src", "/img/logo/eitaaa1.png");
+    }
+    function changeeita1() {
+        $("#eita").attr("src", "/img/logo/eitaaa.png");
+    }
+    $(".bookmark").click(function() {
+        var id = "{{ $estate->id }}"
+        $.get("/estates/favorite/" + id, function(data, status) {
+            if (data.result == 1) {
+                $(".bookmark").addClass("active");
+            } else {
+                $(".bookmark").removeClass("active");
+            }
+        });
+    });
+    var reasonsObj = <?php echo json_encode(estateReportReasons())?>;
+    var reason, reasonChild, desc = null;
+    // select reason group
+    $('.reason-item').on('click',function () {
+        if ($(this).is(':checked')) {
+            reason = $(this).val();
+            //reasonLevel2(reason);
+        }
+    });
+    function reasonLevel2(reason){
+        var childesItems = getReasonChildes(reason);
+
+        $('#btn-report-submit').prop('disabled',false);
+        if(childesItems != ''){
+            $('#options').hide();
+            $('#options-childes').empty().append(childesItems).show();
+
+            $('#btn-report-back').show();
+            $('#btn-report-cancel').hide();
+        }
+    }
+
+    // get reason childes
+    function getReasonChildes(reason) {
+        var childes = reasonsObj[reason]['subgroup'];
+        var childesItems = '';
+        $.each(childes,function (index,item) {
+            childesItems +='<div class="form-check mb-3">' +
+                '<input class="form-check-input reason-child" type="radio" name="reason_subgroup" id="c'+index+'" value="'+index+'" />' +
+                '<label class="form-check-label" for="c'+index+'">'+item+'</label>' +
+                '</div>';
+        });
+
+        return childesItems;
+    }
+    $(".compare").click(function() {
+        var id = "{{ $estate->id }}"
+        $.get("/estates/compare/" + id, function(data, status) {
+            window.location = "/compare"
+        });
+    });
+    $(".js_report_submit").click(function() {
+        var valueStore = [];
+        $.each($(".flexRadioDefault:checked"), function () {
+           valueStore.push($(this).val());
+        });
+        //alert("My favourites are: " + valueStore.join(","));
+        //alert($('.flexRadioDefault').val());
+        $('#exampleModal').modal('toggle');
+        toast({
+            type: 'success',
+            text: 'در حال ذخیره اطلاعات ...',
+        });
+        var eid = '{{$estate->id}}';
+        $.ajax({
+            type: 'POST',
+            url: '/estates/report',
+            data: {
+                _token: '{{csrf_token()}}',
+                estate_id: eid,
+                reason_group: valueStore[0],
+                reason_description: $("#others_text").val()
+            },
+            error: function(response) {
+                toast({
+                    type: 'error',
+                    text: 'مشکل در ثبت اطلاعات!',
+                });
+            },
+            success: function(response) {
+
+                if (response.status == 'true') {
+                    toast({
+                        type: 'success',
+                        text: 'گزارش شما با موفقیت ثبت شد.',
+                    });
+
+
+                }
+            }
+        });
+    })
+    function changevahed(currency , areaUnit)
+    {
+        var area = {{$estate->area}};
+        var areakey = '';
+        if(areaUnit == 'feet')
+        {
+            areakey = '{{l('فوت مربع')}}';
+        }
+        else
+        {
+            areakey = '{{l('مترمربع')}}';
+            area = area / 10.7639;
+        }
+        $('.areaval').html(Math.floor(area));
+        $('.areakey').html(areakey);
+        @if ($estate->type == 1)
+            var price = {{$estate->price}};
+        @else
+            var price = {{$estate->rent}};
+        @endif
+        var pricekey = '';
+        if(currency == 'dirham')
+        {
+            pricekey = '{{l('درهم')}}';
+        }
+        else
+        {
+            pricekey = '{{l('تومان')}}';
+            price = price / 3.67;
+        }
+        $('.priceval').html(Math.floor(price));
+        $('.pricekey').html(pricekey);
+    }
+    // تابع برای تنظیم کوکی با زمان انقضای طولانی (100 سال)
+    function setCookie(name, value, days = 365 * 100) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+    }
+
+    document.getElementById("saveSettings").addEventListener("click", function () {
+        const currency = document.querySelector('input[name="currency"]:checked').value;
+        const areaUnit = document.querySelector('input[name="area"]:checked').value;
+
+        setCookie("currency_unit", currency);
+        setCookie("area_unit", areaUnit);
+
+        changevahed(currency , areaUnit);
+
+        //alert("تنظیمات ذخیره شد.");
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalCentered'));
+        modal.hide(); // بستن مدال
+    });
+</script>
+<script src="/vendor/expandable/jquery.expandable.js"></script>
+<script type="text/javascript">
+    function getCookie(name) {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r
+    }, '');
+    }
+
+
+    jQuery(document).ready(function() {
+        const currency = getCookie('currency_unit'); // مثلا "dirham"
+        const area = getCookie('area_unit'); // مثلا "feet"
+
+
+        if (currency) {
+            let currencyRadio = document.querySelector(`input[name="currency"][value="${currency}"]`);
+            if (currencyRadio) currencyRadio.checked = true;
+        }
+
+        if (area) {
+            let areaRadio = document.querySelector(`input[name="area"][value="${area}"]`);
+            if (areaRadio) areaRadio.checked = true;
+        }
+        changevahed(currency , area);
+
+        $('.fulldescription').expandable({
+            height: 350,
+            offset:120,
+
+            more: "مشاهده اطلاعات بیشتر",
+            less: "مشاهده اطلاعات محدود"
+        });
+
+
+    });
+</script>
+<script type="application/ld+json">
+    [
+        {
+        "@context":"https://schema.org",
+        "url":"{{$estate->url()}}",
+        @if($estate->room_count>0)
+        "numberOfRooms":"{{ $fieldList['room_count'][$estate->room_count] != 'studio' ? $fieldList['room_count'][$estate->room_count] : 0}}",
+        @endif
+        "floorSize":{
+            "value":{{ $estate->area }},
+            "unitCode":"MTK",
+            "@type":"QuantitativeValue"
+        },
+        "accommodationCategory":"{{ estateTypes($estate->estate_type) }}",
+        "name":"{{!empty($estate->title) ? $estate->title : estateTypes($estate->estate_type) . ' in ' . ($estate->district->name ?? '') . ' ' . ($estate->city->name ?? '')}}",
+        @if(isset($url))
+        "image":"{{env('APP_URL')}}/upload/images/estate/{{ $url->url() }}",
+        @endif
+        "@type":"{{ estateTypes($estate->estate_type) }}",
+        "description":"{{$estate->description}}"
+        },{
+            "itemListElement":[
+                {
+                "@type":"ListItem",
+                "item":{"@type":"Thing","name":"{{ss('SITE_NAME')}}","@id":"{{env('APP_URL')}}"},
+                "position":1
+                },
+                @if($estate->city)
+                {
+                    "position":2,
+                    "@type":"ListItem",
+                    "item":{
+                        "@id":"/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}",
+                        "name":"{{$estate->city->name}}",
+                        "@type":"Thing"
+                    }
+                },
+
+                {
+                    "@type":"ListItem",
+                    "item":{
+                        "name":"{{$estate->city->name}} properties",
+                        "@id":"/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}",
+                        "@type":"Thing"
+                    },
+                    "position":3
+                },
+                {
+                    "@type":"ListItem",
+                    "position":4,
+                    "item":{
+                        "@type":"Thing",
+                        "@id":"/c/{{$selectedCity}}?city_id={{$estate->city->id}}&type={{$estate->type}}",
+                        "name":"{{($estate->type == 1)?'Rent in ':'Buy in '}} {{$estate->city->name}}"
+                    }
+                },
+                {
+                    "item":{
+                        "@id":"/c/{{$selectedCity}}?type={{$estate->type}}&&city_id={{$estate->city->id}}&districts={{($estate->district->id ?? '')}}&estateType={{$estate->estate_type}}",
+                        "name":"{{($estate->type == 1)?'Buy of  ':'Rent of '}} {{ estateTypes($estate->estate_type) }} in {{$estate->city->name}}",
+                        "@type":"Thing"
+                    },
+                    "@type":"ListItem",
+                    "position":5
+                },
+                {
+                    "@type":"ListItem",
+                    "item":{
+                        "@id":"{{$estate->url()}}",
+                        "name":"{{!empty($estate->title) ? $estate->title : estateTypes($estate->estate_type) . ' in ' . ($estate->district->name ?? '') . ' ' . ($estate->city->name ?? '')}}",
+                        "@type":"Thing"
+                    },
+                    "position":6
+                }
+                @endif
+                ],
+                "@context":"https://schema.org",
+                "@type":"BreadcrumbList"
+            }
+        ]</script>
+
+@endsection

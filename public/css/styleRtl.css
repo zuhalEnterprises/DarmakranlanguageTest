@@ -1,0 +1,90 @@
+/* customuz select2 */
+.select2-container--default .select2-selection--single  {
+	background-color: #fff;
+	border: 1px solid #d5d2dc;
+	height: 43px;
+	display: flex;
+	align-items: center;
+    border-radius: 0.5rem;
+}
+.select2-container--default  .select2-selection--multiple {
+	background-color: #fff;
+	border: 1px solid #d5d2dc;
+	height: 43px;
+	display: flex;
+	align-items: center;
+    border-radius: 0.5rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 26px;
+	position: absolute;
+	top: 10px;
+	right: 1px;
+	width: 20px;
+}
+.select2-dropdown {
+	border: 1px solid #d5d2dc;
+	border-radius: 0.5rem;
+}
+.select2-container--default .select2-search--dropdown .select2-search__field {
+	border: 1px solid #d5d2dc;
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border: 1px solid #d5d2dc;
+}
+.select2-container .select2-selection--multiple .select2-selection__rendered {
+	margin: 0;
+}
+
+.search {
+    background: #E7E7E7;
+    width: 100%;
+    height: 40px;
+    cursor: pointer
+}
+#search {
+    background: #E7E7E7;
+    width: 100%;
+    border-top: 3px solid #D2D6DE
+}
+.pagination>li>a,
+.pagination>li>span {
+    position: relative;
+    float: left;
+    padding: 9px 17px;
+    margin-left: -1px;
+    line-height: 1.428571429;
+    text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 7px !important;
+    box-shadow: 0 5px 15px rgb(0 0 0 / 1%);
+    font-weight: 600;
+}
+.pagination svg {
+    width: 15px !important;
+    height: 20px !important
+}
+.pagination .page-item.active .page-link {
+    background-color: #025ec7;
+    border-color: #025ec7;
+}
+.pagination .page-link:hover {
+    color: var(--global-color-text) !important;
+}
+.pagination .page-link:focus {
+    box-shadow: none;
+}
+.pagination .checkepagination {
+    /* background-color: #001E77 !important;
+    border-radius: 5px !important; */
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+
+
+
+main{
+    direction: rtl;
+}

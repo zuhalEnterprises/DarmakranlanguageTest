@@ -1,0 +1,315 @@
+.box-register {
+    background: #F8F8F8;
+    border: 1px solid #E7E7E7;
+    min-height: 90vh;
+    width: 90%;
+    margin: 20px auto;
+    border-radius: 25px;
+}
+
+.logo-register-box {
+    width: 255px;
+    margin: 50px auto;
+}
+
+.form-register-label {
+    font-size: 18px;
+    font-weight: 300;
+    color: #5C5C5C;
+}
+
+.form-message {
+    border: 1px solid var(--primary-yellow);
+    background-color: var(--secondary-yellow);
+    padding: 15px;
+    text-align: center;
+    border-radius: 30px;
+}
+
+.form-message p {
+    color: var(--primary-yellow);
+    font-size: 17px;
+    margin: 0;
+}
+
+.form-register-h2 {
+    font-weight: 500;
+    font-size: 24px;
+    color: var(--text-primary)
+}
+
+.content-register-box .form-label {
+    font-size: 18px;
+    font-weight: 300;
+    padding-right: 14px;
+}
+
+.form-control-register {
+    position: relative;
+    z-index: 2;
+    border: 1px solid #A3A3A3;
+    border-radius: 24px;
+    padding: 5px 15px;
+    height: 55px;
+    font-size: 20px;
+}
+
+.wrapper {
+    display: inline-flex;
+    background: #fff;
+    height: 100px;
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 1px solid #E7E7E7;
+    border-radius: 24px;
+    background: #F9F9F9;
+}
+
+.wrapper .option,
+.wrapper .assist,
+.wrapper .branch,
+.wrapper .contract {
+    background: #F9F9F9;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border-radius: 30px;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+/* option */
+
+#option-1:checked:checked~.option-1,
+#option-2:checked:checked~.option-2 {
+    border-color: #0069d9;
+    background: #0069d9;
+}
+
+#option-1:checked:checked~.option-1 span,
+#option-2:checked:checked~.option-2 span {
+    color: #fff;
+}
+
+/* contract */
+
+#contract-1:checked:checked~.contract-1,
+#contract-2:checked:checked~.contract-2,
+#contract-3:checked:checked~.contract-3 {
+    border-color: #0069d9;
+    background: #0069d9;
+}
+
+#contract-1:checked:checked~.contract-1 span,
+#contract-2:checked:checked~.contract-2 span,
+#contract-3:checked:checked~.contract-3 span {
+    color: #fff;
+}
+
+/* branch */
+
+#branch-1:checked:checked~.branch-1,
+#branch-2:checked:checked~.branch-2 {
+    border-color: #0069d9;
+    background: #0069d9;
+}
+
+#branch-1:checked:checked~.branch-1 span,
+#branch-2:checked:checked~.branch-2 span {
+    color: #fff;
+}
+
+/* ss */
+
+#assist-1:checked:checked~.assist-1,
+#assist-2:checked:checked~.assist-2 {
+    border-color: #0069d9;
+    background: #0069d9;
+}
+
+#assist-1:checked:checked~.assist-1,
+#assist-2:checked:checked~.assist-2 {
+    border-color: #0069d9;
+    background: #0069d9;
+}
+
+#assist-1:checked:checked~.assist-1 span,
+#assist-2:checked:checked~.assist-2 span {
+    color: #fff;
+}
+
+.wrapper .option span,
+.wrapper .contract span,
+.wrapper .branch span,
+.wrapper .assist span {
+    font-size: 20px;
+    color: #808080;
+}
+
+.day-calc {
+    padding: 15px;
+    border: 1px solid #A3A3A3;
+    border-radius: 24px;
+    color: #5C5C5C;
+    height: 55px;
+}
+
+.form-check-input[type=checkbox] {
+    border: 0.1px solid #A3A3A3;
+    border-radius: 24px;
+    padding: 15px;
+}
+
+.calendar-box {
+    display: flex;
+    width: 100%;
+    height: 55px;
+    border: 1px solid #A3A3A3;
+    border-radius: 24px;
+    /* padding: 5px 15px; */
+    font-size: 20px;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.calendar-pointer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right: 14px;
+    font-size: 14px;
+}
+.experience,
+.calendar-day-input,
+.calendar-month-input,
+.calendar-year-input {
+    border: 0;
+    width: 100%;
+    border-radius: 24px;
+    text-align: left;
+    padding-left: 16px;
+}
+
+.form-input-box {
+    position: relative;
+}
+
+label.error {
+    color: red;
+    font-size: 13px;
+    font-weight: 300;
+    white-space: nowrap;
+    background: rgba(250, 137, 107, 0.08);
+    padding: 25px 12px 3px;
+    width: 94%;
+    border-radius: 0 0 15px 15px;
+    position: absolute;
+    bottom: -30%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+/* Sign Up */
+
+.form-help {
+    background: #E7E7E7;
+    border: 1px solid #A3A3A3;
+    border-radius: 24px;
+    color: #5C5C5C;
+    padding: 15px;
+    text-align: center;
+}
+
+.test {
+    position: relative;
+}
+
+.icon-test1 {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.form-plus-minus {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    border: 1px solid #A3A3A3;
+    border-radius: 24px;
+    padding: 5px 15px;
+    height: 55px;
+    font-size: 20px;
+    background: #fff;
+}
+
+.form-plus-input {
+    border: 0;
+    text-align: center;
+}
+
+.form-conrtol-btn {
+    cursor: pointer;
+}
+
+.form-conrtol-btn:hover {
+    color: #5C5C5C;
+}
+
+.form-plus-input:focus {
+    border: 0;
+    box-shadow: 0 0 0 0rem #fff !important;
+}
+
+.form-map {
+    border: 1px solid var(--primary-yellow);
+    border-radius: 25px;
+}
+
+.card-img {
+    position: relative;
+    border-radius: 30px;
+    width: 100%;
+    height: 165px;
+    background: white
+}
+
+.card-img-box {
+    border-radius: 50%;
+    width: 159px;
+    height: 164px;
+    background: white;
+}
+
+.borderblack {
+    border: 3px dotted black
+}
+
+@media screen and (max-width:768px) {
+    .box-register {
+        width: 95%;
+    }
+}
+
+@media (max-width:400px) {
+    .calendar-pointer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-right: 8px;
+        font-size: 14px;
+    }
+}
